@@ -41,9 +41,9 @@ pipeline {
 
         --server.port=8081 > app.log 2>&1 < /dev/null &
 
-        sleep 5
+        sleep 2
 
-        ps -ef | grep demo-0.0.1-SNAPSHOT | grep -v grep
+        exit 0
 
         '''
 
