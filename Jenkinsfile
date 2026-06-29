@@ -34,5 +34,39 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
+        stage('Copy Artifact') {
+    steps {
+        sh '''
+        mkdir -p /Users/sadara/apps/demo
+
+        cp target/demo-0.0.1-SNAPSHOT.war \
+           /Users/sadara/apps/demo/
+        '''
+    }
+}
+        stage('Deploy') {
+    steps {
+        sh '''
+        pkill -f demo-0.0.1-SNAPSHOT.war || true
+
+        export BUILD_ID=dontKillMe
+
+        nohup java \
+        -jar /Users/sadara/apps/demo/demo-0.0.1-SNAPSHOT.war \
+        --server.port=8081 \
+        >/Users/sadara/apps/demo/app.log 2>&1 \
+        < /dev/null &
+
+        sleep 5
+        '''
+    }
+}
+stage('Health Check') {
+    steps {
+        sh '''
+        curl -f http://localhost:8081/
+        '''
+    }
+}
     }
 }
