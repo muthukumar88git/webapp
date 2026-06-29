@@ -27,21 +27,25 @@ pipeline {
             }
         }
 
+ stage('Deploy') {
+
     steps {
 
         sh '''
 
-        pkill -f demo-0.0.1-SNAPSHOT.war || true
+            pkill -f demo-0.0.1-SNAPSHOT.war || true
 
-        export BUILD_ID=dontKillMe
+            BUILD_ID=dontKillMe \
 
-        nohup java -jar target/demo-0.0.1-SNAPSHOT.war \
+            nohup java -jar target/demo-0.0.1-SNAPSHOT.war \
 
-        --server.port=8081 > app.log 2>&1 < /dev/null &
+                --server.port=8081 \
 
-        sleep 2
+                > app.log 2>&1 < /dev/null &
 
-        exit 0
+            sleep 2
+
+            exit 0
 
         '''
 
