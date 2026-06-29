@@ -27,12 +27,27 @@ pipeline {
             }
         }
 
-        stage('Run Application') {
-            steps {
-                sh '''
-                nohup java -jar target/*.war > app.log 2>&1 &
-                '''
-            }
+      stage('Deploy') {
+
+    steps {
+
+        sh '''
+
+        pkill -f demo-0.0.1-SNAPSHOT.war || true
+
+        export BUILD_ID=dontKillMe
+
+        nohup java -jar target/demo-0.0.1-SNAPSHOT.war \
+
+        --server.port=8081 > app.log 2>&1 < /dev/null &
+
+        sleep 5
+
+        ps -ef | grep demo-0.0.1-SNAPSHOT | grep -v grep
+
+        '''
+
+    }
         }
 
     }
