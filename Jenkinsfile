@@ -53,6 +53,7 @@ stage('Health Check') {
     steps {
         sh '''
         curl -f http://localhost:8081/
+        sleep 2
         '''
     }
 }
