@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     tools {
@@ -21,37 +20,19 @@ pipeline {
             }
         }
 
+        // Optional: mvn clean package already runs tests,
+        // so you can remove this stage if you don't need
+        // to execute tests twice.
         stage('Test') {
             steps {
                 sh 'mvn test'
             }
         }
 
- stage('Deploy') {
-
-    steps {
-
-        sh '''
-
-            pkill -f demo-0.0.1-SNAPSHOT.war || true
-
-            BUILD_ID=dontKillMe \
-
-            nohup java -jar target/demo-0.0.1-SNAPSHOT.war \
-
-                --server.port=8081 \
-
-                > app.log 2>&1 < /dev/null &
-
-            sleep 2
-
-            exit 0
-
-        '''
-
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+            }
+        }
     }
 }
-        }
-}
-    
-
